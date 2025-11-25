@@ -2,9 +2,9 @@ service_dir = join_paths(meson.current_build_dir(), 'services')
 
 test_env = environment()
 test_env.prepend('GI_TYPELIB_PATH',
-  join_paths(meson.project_build_root(), 'libspeechprovider'), separator: ':')
+  join_paths(meson.current_build_dir(), 'libspeechprovider'), separator: ':')
 test_env.prepend('LD_LIBRARY_PATH',
-  join_paths(meson.project_build_root(), 'libspeechprovider'), separator: ':')
+  join_paths(meson.current_build_dir(), 'libspeechprovider'), separator: ':')
 test_env.set('G_DEBUG', 'fatal-warnings')
 
 python_module = import('python')

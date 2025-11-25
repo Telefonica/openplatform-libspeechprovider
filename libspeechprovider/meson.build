@@ -1,11 +1,10 @@
-python_module = import('python')
-python = python_module.find_installation(
-  'python3', required : true)
-gen_enums = files(join_paths(meson.project_source_root(), 'interface', 'generate_enums.py'))
-speech_provider_dbus_enums_ch = custom_target(
+prog_python = find_program('python3')
+iface_xml = join_paths(meson.current_build_dir(), 'interface', 'org.freedesktop.Speech.Provider.xml')
+gen_enums = join_paths(meson.current_build_dir(), 'interface', 'generate_enums.py')
+speech_provider_dbus_enums_ch = custom_target('speech_provider_dbus_enums_ch',
     input: iface_xml,
     output: ['speech-provider-dbus-enums.c', 'speech-provider-dbus-enums.h'],
-    command: [python, gen_enums, 'speech_provider', '@INPUT@', '@OUTPUT@'],
+    command: [prog_python, gen_enums, 'speech_provider', '@INPUT@', '@OUTPUT@'],
     install: true,
     install_dir: join_paths(get_option('includedir'), 'speech-provider')
 )
@@ -74,27 +73,27 @@ pkg.generate(
       version: meson.project_version(),
       subdirs: 'speech-provider',
      requires: 'gobject-2.0',
-     variables: {
-      'iface_xml': get_option('prefix') / get_option('datadir') / 'speech-provider' / 'org.freedesktop.Speech.Provider.xml',
-    },
-    uninstalled_variables: {
-      'iface_xml': '${prefix}' / 'interface' /  'org.freedesktop.Speech.Provider.xml',
-    }
+     variables: [
+       'iface_xml=' + get_option('prefix') / get_option('datadir') / 'speech-provider' / 'org.freedesktop.Speech.Provider.xml',
+     ],
+     uninstalled_variables: [
+      'iface_xml=${prefix}' / 'interface' /  'org.freedesktop.Speech.Provider.xml',
+     ]
 )
 
-meson.override_dependency('speech-provider-1.0', speech_provider_lib_dep)
+#meson.override_dependency('speech-provider-1.0', speech_provider_lib_dep)
 
 if get_option('introspection')
   gnome = import('gnome')
   speech_provider_gir = gnome.generate_gir(speech_provider_lib,
-              sources: speech_provider_headers + speech_provider_sources + speech_provider_dbus_enums_ch[1],
+              sources: speech_provider_headers + speech_provider_sources + ['speech-provider-dbus-enums.h'],
               nsversion: api_version,
               namespace: 'SpeechProvider',
               header: 'speech-provider/speech-provider.h',
-          symbol_prefix: 'speech_provider',
-      identifier_prefix: 'SpeechProvider',
-               includes: [ 'GObject-2.0' ],
-                install: true,
-                export_packages: 'speech-provider-' + api_version,
+              symbol_prefix: 'speech_provider',
+              identifier_prefix: 'SpeechProvider',
+              includes: [ 'GObject-2.0' ],
+              install: true,
+              export_packages: 'speech-provider-' + api_version
   )
 endif

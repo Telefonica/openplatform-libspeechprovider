@@ -1,6 +1,6 @@
 toml_conf = configuration_data()
 toml_conf.set('version', meson.project_version())
-toml_conf.set('license', meson.project_license())
+toml_conf.set('license', 'LGPL-2.1-or-later')
 
 source_toml = configure_file(
   input: 'SpeechProvider.toml.in',
@@ -8,12 +8,9 @@ source_toml = configure_file(
   configuration: toml_conf,
 )
 
-interface_src_dir = join_paths(meson.project_source_root(), 'interface')
-logo = join_paths(meson.project_source_root(), 'spiel-logo.svg')
-
-fs = import('fs')
-urlmap_doc = fs.copyfile('urlmap.js')
-logo_file = fs.copyfile(logo)
+interface_src_dir = join_paths(meson.current_build_dir(), 'interface')
+logo = join_paths(meson.current_build_dir(), 'spiel-logo.svg')
+urlmap_doc = join_paths(meson.current_build_dir(), 'doc', 'urlmap.js')
 
 gidocgen = find_program('gi-docgen', required: true)
 
@@ -43,7 +40,7 @@ docs = custom_target('libspeechprovider-doc',
     '@INPUT1@',
   ],
   build_by_default: true,
-  depends: [ urlmap_doc, logo_file ],
+  depends: [ urlmap_doc, logo ],
   install: true,
   install_dir: get_option('datadir') / 'doc',
 )
