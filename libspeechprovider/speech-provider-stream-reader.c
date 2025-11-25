@@ -39,9 +39,9 @@ struct _SpeechProviderStreamReader
   SpeechProviderChunkType next_chunk_type;
 };
 
-G_DEFINE_FINAL_TYPE (SpeechProviderStreamReader,
-                     speech_provider_stream_reader,
-                     G_TYPE_OBJECT)
+G_DEFINE_TYPE (SpeechProviderStreamReader,
+	       speech_provider_stream_reader,
+	       G_TYPE_OBJECT)
 
 enum
 {

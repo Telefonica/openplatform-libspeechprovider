@@ -38,9 +38,9 @@ struct _SpeechProviderStreamWriter
   gboolean stream_header_sent;
 };
 
-G_DEFINE_FINAL_TYPE (SpeechProviderStreamWriter,
-                     speech_provider_stream_writer,
-                     G_TYPE_OBJECT)
+G_DEFINE_TYPE (SpeechProviderStreamWriter,
+	       speech_provider_stream_writer,
+	       G_TYPE_OBJECT)
 
 enum
 {
